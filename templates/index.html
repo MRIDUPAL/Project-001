@@ -6,19 +6,68 @@ Home
 
 {% block content %}
 
-<div class="text-center">
+<div class="text-center py-5">
 
-<h1 class="display-3 fw-bold">
-Gamify Your Goals
-</h1>
+    <h1 class="display-2 fw-bold mb-4">
+        Gamify Your Goals
+    </h1>
 
-<p class="lead">
-Complete tasks, earn XP and level up.
-</p>
+    <p class="lead mb-5">
+        Complete tasks, earn XP, level up, and become the hero of your own journey.
+    </p>
 
-<a href="/register" class="btn btn-primary btn-lg">
-Start Your Adventure
-</a>
+    <button
+        class="btn btn-primary btn-lg px-5 py-3"
+        data-bs-toggle="modal"
+        data-bs-target="#startModal">
+
+        🚀 Start Your Adventure
+
+    </button>
+
+</div>
+
+<!-- Start Adventure Modal -->
+
+<div class="modal fade" id="startModal" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content bg-dark text-white border border-secondary rounded-4">
+
+            <div class="modal-header border-secondary">
+
+                <h3 class="modal-title">
+                    🎮 Welcome to Questify
+                </h3>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body text-center">
+
+                <p class="mb-4">
+                    Ready to begin your productivity adventure?
+                </p>
+
+                <a href="/login" class="btn btn-outline-light w-100 mb-3 py-2">
+                    🔑 Login
+                </a>
+
+                <a href="/register" class="btn btn-primary w-100 py-2">
+                    📝 Create New Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
