@@ -1,195 +1,232 @@
-/* ==========================
-   GLOBAL
-========================== */
+/* ==========================================
+   QUESTIFY - STYLE.CSS
+========================================== */
+
+/* ---------- GLOBAL ---------- */
 
 body{
     background:#0D1117;
     color:#F8FAFC;
-    font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
 }
 
-/* ==========================
-   NAVBAR
-========================== */
+/* ---------- NAVBAR ---------- */
 
 .navbar{
-
     background:#161B22 !important;
-
     border-bottom:2px solid #7C3AED;
-
-    padding:15px;
-
+    padding:15px 0;
 }
 
 .navbar-brand{
-
+    color:#FFF !important;
     font-size:1.5rem;
-
-    font-weight:bold;
-
-    color:white !important;
-
+    font-weight:700;
 }
 
-/* ==========================
-   CARDS
-========================== */
+/* ---------- CARDS ---------- */
 
 .card{
-
     background:#161B22;
-
     border:1px solid #30363D;
-
     border-radius:18px;
-
-    box-shadow:0 0 18px rgba(124,58,237,.20);
-
+    color:#FFF;
     transition:.25s;
-
+    box-shadow:0 0 18px rgba(124,58,237,.15);
 }
 
 .card:hover{
-
-    transform:translateY(-4px);
-
-    box-shadow:0 0 25px rgba(124,58,237,.35);
-
+    transform:translateY(-5px);
+    border-color:#7C3AED;
+    box-shadow:0 0 30px rgba(124,58,237,.35);
 }
 
-/* ==========================
-   HEADINGS
-========================== */
+/* ---------- PLAYER MINI CARDS ---------- */
+
+.card .card{
+    background:#0D1117;
+    border:1px solid #30363D;
+    border-radius:14px;
+    transition:.2s;
+}
+
+.card .card:hover{
+    transform:scale(1.05);
+    border-color:#7C3AED;
+}
+
+.card .card h4{
+    font-size:1.8rem;
+    margin-bottom:8px;
+}
+
+.card .card h5{
+    margin-bottom:4px;
+    font-weight:700;
+}
+
+.card .card small{
+    color:#9CA3AF;
+}
+
+/* ---------- HEADINGS ---------- */
 
 h1,h2,h3,h4,h5{
-
-    color:white;
-
+    color:#FFF;
     font-weight:700;
-
 }
 
-/* ==========================
-   FORMS
-========================== */
+/* ---------- TEXT ---------- */
+
+p{
+    color:#D1D5DB;
+}
+
+/* ---------- FORMS ---------- */
 
 .form-control,
 .form-select{
-
     background:#0D1117;
-
-    color:white;
-
+    color:#FFF;
     border:1px solid #30363D;
-
 }
 
 .form-control::placeholder{
-
     color:#8B949E;
-
 }
 
 .form-control:focus,
 .form-select:focus{
-
     background:#0D1117;
-
-    color:white;
-
+    color:#FFF;
     border-color:#7C3AED;
-
     box-shadow:0 0 10px rgba(124,58,237,.4);
-
 }
 
-/* ==========================
-   BUTTONS
-========================== */
+/* ---------- BUTTONS ---------- */
+
+.btn{
+    transition:.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
 
 .btn-success{
-
     background:#7C3AED;
-
     border:none;
-
 }
 
 .btn-success:hover{
-
     background:#6D28D9;
-
 }
 
 .btn-primary{
-
     background:#7C3AED;
-
     border:none;
-
 }
 
 .btn-primary:hover{
-
     background:#6D28D9;
-
 }
 
 .btn-warning{
-
     background:#FACC15;
-
+    color:#000;
     border:none;
-
-    color:black;
-
 }
 
-/* ==========================
-   PROGRESS BAR
-========================== */
+.btn-danger{
+    border:none;
+}
+
+/* ---------- PROGRESS BAR ---------- */
 
 .progress{
-
-    height:16px;
-
-    border-radius:12px;
-
+    height:18px;
     background:#30363D;
-
+    border-radius:30px;
+    overflow:hidden;
 }
 
 .progress-bar{
-
     background:linear-gradient(
         90deg,
         #7C3AED,
         #A855F7
     );
-
-    transition:width .5s ease;
-
+    transition:width .6s ease;
 }
 
-/* ==========================
-   BADGES
-========================== */
+/* ---------- BADGES ---------- */
 
 .badge{
-
     padding:8px 12px;
-
     font-size:.9rem;
-
+    border-radius:10px;
 }
 
-/* ==========================
-   TEXT
-========================== */
+/* ---------- COINS ---------- */
 
-p{
+.text-warning{
+    color:#FACC15 !important;
+    text-shadow:0 0 10px rgba(250,204,21,.45);
+}
 
-    color:#D1D5DB;
+/* ---------- QUEST CARDS ---------- */
+
+.card.mt-3{
+    transition:.25s;
+}
+
+.card.mt-3:hover{
+    border-color:#7C3AED;
+}
+
+/* ---------- LINKS ---------- */
+
+a{
+    text-decoration:none;
+}
+
+/* ---------- SCROLLBAR ---------- */
+
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:#161B22;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#7C3AED;
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:#A855F7;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width:768px){
+
+    h1{
+        font-size:2rem;
+    }
+
+    h2{
+        font-size:1.7rem;
+    }
+
+    h3{
+        font-size:1.4rem;
+    }
+
+    .card{
+        margin-bottom:15px;
+    }
 
 }
