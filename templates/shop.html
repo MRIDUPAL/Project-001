@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Shop{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    🛒 Questify Shop
+</h1>
+
+<div class="alert alert-warning fs-5">
+    🪙 Your Coins:
+    <strong>{{ coins }}</strong>
+</div>
+
+<div class="row g-4">
+
+{% for item in items %}
+
+<div class="col-md-4">
+
+    <div class="card h-100">
+
+        <div class="card-body text-center">
+
+            <div style="font-size:60px;">
+                {{ item.icon }}
+            </div>
+
+            <h3>{{ item.name }}</h3>
+
+            <p class="text-muted">
+                {{ item.description }}
+            </p>
+
+            <span class="badge bg-info">
+                {{ item.category }}
+            </span>
+
+            <br><br>
+
+            {% if item.rarity == "Common" %}
+
+                <span class="badge bg-secondary">
+                    ⚪ Common
+                </span>
+
+            {% elif item.rarity == "Rare" %}
+
+                <span class="badge bg-primary">
+                    🔵 Rare
+                </span>
+
+            {% elif item.rarity == "Epic" %}
+
+                <span class="badge" style="background:#7C3AED;">
+                    🟣 Epic
+                </span>
+
+            {% elif item.rarity == "Legendary" %}
+
+                <span class="badge bg-warning text-dark">
+                    🟠 Legendary
+                </span>
+
+            {% endif %}
+
+            <hr>
+
+            <h4 class="text-warning">
+                🪙 {{ item.price }}
+            </h4>
+
+            {% if item.id in equipped_ids %}
+
+                <button
+                    class="btn btn-primary w-100 mt-3"
+                    disabled>
+
+                    ✓ Equipped
+
+                </button>
+
+            {% elif item.id in owned_ids %}
+
+                {% if item.category == "Avatar" %}
+
+                    <form
+                        action="/equip/{{ item.id }}"
+                        method="POST">
+
+                        <button
+                            class="btn btn-warning w-100 mt-3">
+
+                            Equip
+
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <button
+                        class="btn btn-secondary w-100 mt-3"
+                        disabled>
+
+                        ✓ Owned
+
+                    </button>
+
+                {% endif %}
+
+            {% else %}
+
+                <form
+                    action="/buy/{{ item.id }}"
+                    method="POST">
+
+                    <button
+                        class="btn btn-success w-100 mt-3">
+
+                        Buy
+
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

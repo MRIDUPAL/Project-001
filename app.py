@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from models import db, User, Quest
+from models import db, User, Quest, ShopItem, Inventory
 
 from game_logic import (
     get_rank,
     xp_needed,
     coin_reward,
-    check_achievements
+    check_achievements,
+    seed_shop
 )
 
 app = Flask(__name__)
@@ -20,7 +21,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-
+    seed_shop()
 
 @app.route("/")
 def home():
@@ -114,6 +115,7 @@ def dashboard():
 
     return render_template(
         "dashboard.html",
+        avatar=user.avatar,
         username=user.username,
         quests=quests,
         xp=user.xp,
@@ -127,6 +129,141 @@ def dashboard():
         completion_rate=completion_rate
     )
 
+@app.route("/shop")
+def shop():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = db.session.get(User, session["user_id"])
+
+    if user is None:
+        session.clear()
+        return redirect("/login")
+
+    items = ShopItem.query.order_by(
+        ShopItem.price
+    ).all()
+
+    owned_items = Inventory.query.filter_by(
+        user_id=user.id
+    ).all()
+
+    owned_ids = [item.item_id for item in owned_items]
+
+    equipped_ids = [
+        item.item_id
+        for item in owned_items
+        if item.equipped
+    ]
+
+    return render_template(
+        "shop.html",
+        username=user.username,
+        avatar=user.avatar,
+        coins=user.coins,
+        items=items,
+        owned_ids=owned_ids,
+        equipped_ids=equipped_ids
+    )
+
+@app.route("/buy/<int:item_id>", methods=["POST"])
+def buy_item(item_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = db.session.get(User, session["user_id"])
+
+    if user is None:
+        session.clear()
+        return redirect("/login")
+
+    item = db.session.get(ShopItem, item_id)
+
+    if item is None:
+        return redirect("/shop")
+
+    owned = Inventory.query.filter_by(
+        user_id=user.id,
+        item_id=item.id
+    ).first()
+
+    if owned:
+        flash("ℹ️ You already own this item.", "info")
+        return redirect("/shop")
+
+    if user.coins < item.price:
+        flash(
+            f"❌ You need {item.price - user.coins} more coins to buy {item.name}.",
+            "danger"
+        )
+        return redirect("/shop")
+
+    user.coins -= item.price
+
+    inventory = Inventory(
+        user_id=user.id,
+        item_id=item.id
+    )
+
+    db.session.add(inventory)
+    db.session.commit()
+
+    flash(
+        f"✅ Successfully purchased {item.name}!",
+        "success"
+    )
+
+    return redirect("/shop")
+
+@app.route("/equip/<int:item_id>", methods=["POST"])
+def equip_item(item_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = db.session.get(User, session["user_id"])
+
+    if user is None:
+        session.clear()
+        return redirect("/login")
+
+    inventory_item = Inventory.query.filter_by(
+        user_id=user.id,
+        item_id=item_id
+    ).first()
+
+    if inventory_item is None:
+        flash("❌ You don't own this item.", "danger")
+        return redirect("/shop")
+
+    item = db.session.get(ShopItem, item_id)
+
+    if item.category != "Avatar":
+        flash("❌ Only avatars can be equipped right now.", "warning")
+        return redirect("/shop")
+
+    # Unequip every avatar
+    avatar_items = Inventory.query.join(ShopItem).filter(
+        Inventory.user_id == user.id,
+        ShopItem.category == "Avatar"
+    ).all()
+
+    for inv in avatar_items:
+        inv.equipped = False
+
+    # Equip selected avatar
+    inventory_item.equipped = True
+
+    # Update user's avatar
+    user.avatar = item.icon
+
+    db.session.commit()
+
+    flash(f"✅ {item.name} equipped!", "success")
+
+    return redirect("/shop")
 
 @app.route("/add_quest", methods=["POST"])
 def add_quest():
@@ -191,6 +328,7 @@ def complete_quest(quest_id):
         check_achievements(user)
 
         # Level Up
+        # Level Up
         needed = xp_needed(user.level)
 
         while user.xp >= needed:
@@ -198,9 +336,19 @@ def complete_quest(quest_id):
             user.xp -= needed
             user.level += 1
 
+            flash(
+                f"⭐ Level Up! You reached Level {user.level}.",
+                "success"
+            )
+
             needed = xp_needed(user.level)
 
         db.session.commit()
+        
+        flash(
+            f"🎉 Quest completed! +{quest.xp} XP, +{coin_reward(quest.difficulty)} Coins",
+            "success"
+        )
 
     return redirect("/dashboard")
 

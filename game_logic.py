@@ -1,5 +1,5 @@
 from models import Achievement, Quest, db
-
+from models import ShopItem
 
 def get_rank(level):
     if level < 5:
@@ -67,3 +67,60 @@ def check_achievements(user):
             "⭐ Adventurer",
             "Reached Level 5."
         )
+
+def seed_shop():
+
+    if ShopItem.query.first():
+        return
+
+    items = [
+
+        ShopItem(
+            name="Robot Avatar",
+            description="Become a futuristic robot.",
+            icon="🤖",
+            category="Avatar",
+            rarity="Common",
+            price=250
+        ),
+
+        ShopItem(
+            name="Ninja Avatar",
+            description="Move in the shadows.",
+            icon="🥷",
+            category="Avatar",
+            rarity="Rare",
+            price=400
+        ),
+
+        ShopItem(
+            name="Wizard Avatar",
+            description="Master of magic.",
+            icon="🧙",
+            category="Avatar",
+            rarity="Epic",
+            price=600
+        ),
+
+        ShopItem(
+            name="Champion Title",
+            description="Show everyone your rank.",
+            icon="👑",
+            category="Title",
+            rarity="Legendary",
+            price=1000
+        ),
+
+        ShopItem(
+            name="Neon Theme",
+            description="Unlock a glowing interface.",
+            icon="🌌",
+            category="Theme",
+            rarity="Epic",
+            price=500
+        ),
+
+    ]
+
+    db.session.add_all(items)
+    db.session.commit()

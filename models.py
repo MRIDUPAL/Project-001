@@ -17,6 +17,10 @@ class User(db.Model):
     level = db.Column(db.Integer, default=1)
     xp = db.Column(db.Integer, default=0)
     coins = db.Column(db.Integer, default=0)
+    avatar = db.Column(
+    db.String(20),
+    default="🎮"
+    )
     streak = db.Column(db.Integer, default=0)
 
     quests = db.relationship(
@@ -72,3 +76,53 @@ class Achievement(db.Model):
 
     def __repr__(self):
         return f"<Achievement {self.title}>"
+
+class ShopItem(db.Model):
+    __tablename__ = "shop_items"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(100), nullable=False)
+
+    description = db.Column(db.String(200))
+
+    icon = db.Column(db.String(20), nullable=False)
+
+    category = db.Column(db.String(30), nullable=False)
+
+    rarity = db.Column(
+    db.String(20),
+    default="Common"
+    )
+
+    price = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f"<ShopItem {self.name}>"
+
+
+class Inventory(db.Model):
+    __tablename__ = "inventory"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+    item_id = db.Column(
+        db.Integer,
+        db.ForeignKey("shop_items.id"),
+        nullable=False
+    )
+
+    equipped = db.Column(
+    db.Boolean,
+    default=False
+    )
+
+    user = db.relationship("User", backref="inventory")
+
+    item = db.relationship("ShopItem")
