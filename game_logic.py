@@ -1,5 +1,79 @@
-from models import Achievement, Quest, db
-from models import ShopItem
+from models import (
+    db,
+    User,
+    Quest,
+    ShopItem,
+    Inventory,
+    Achievement
+)
+
+ALL_ACHIEVEMENTS = [
+
+    {
+        "title": "🩸 First Blood",
+        "description": "Complete your first quest.",
+        "type": "quests",
+        "target": 1,
+        "reward": 50
+    },
+
+    {
+        "title": "⚔️ Adventurer",
+        "description": "Complete 10 quests.",
+        "type": "quests",
+        "target": 10,
+        "reward": 100
+    },
+
+    {
+        "title": "📜 Quest Master",
+        "description": "Complete 50 quests.",
+        "type": "quests",
+        "target": 50,
+        "reward": 300
+    },
+
+    {
+        "title": "⭐ Rising Star",
+        "description": "Reach Level 5.",
+        "type": "level",
+        "target": 5,
+        "reward": 150
+    },
+
+    {
+        "title": "🛡️ Hero",
+        "description": "Reach Level 10.",
+        "type": "level",
+        "target": 10,
+        "reward": 300
+    },
+
+    {
+        "title": "💰 Rich",
+        "description": "Collect 1000 Coins.",
+        "type": "coins",
+        "target": 1000,
+        "reward": 200
+    },
+
+    {
+        "title": "🛒 Shopper",
+        "description": "Buy your first shop item.",
+        "type": "shop",
+        "target": 1,
+        "reward": 100
+    },
+
+    {
+        "title": "🐉 Legend",
+        "description": "Reach Level 40.",
+        "type": "level",
+        "target": 40,
+        "reward": 500
+    }
+
+]
 
 def get_rank(level):
     if level < 5:
@@ -34,39 +108,74 @@ def unlock_achievement(user_id, title, description):
         title=title
     ).first()
 
-    if achievement is None:
+    if achievement is not None:
+        return False
 
-        db.session.add(
-            Achievement(
-                title=title,
-                description=description,
-                user_id=user_id
-            )
+    db.session.add(
+        Achievement(
+            title=title,
+            description=description,
+            user_id=user_id
         )
+    )
 
+    return True
 
 def check_achievements(user):
 
-    completed = Quest.query.filter_by(
+    completed_quests = Quest.query.filter_by(
         user_id=user.id,
         completed=True
     ).count()
 
-    if completed == 1:
+    purchased_items = Inventory.query.filter_by(
+        user_id=user.id
+    ).count()
 
-        unlock_achievement(
-            user.id,
-            "🏆 First Blood",
-            "Completed your first quest."
-        )
+    unlocked_now = []
 
-    if user.level >= 5:
+    for achievement in ALL_ACHIEVEMENTS:
 
-        unlock_achievement(
-            user.id,
-            "⭐ Adventurer",
-            "Reached Level 5."
-        )
+        title = achievement["title"]
+
+        already_unlocked = Achievement.query.filter_by(
+            user_id=user.id,
+            title=title
+        ).first()
+
+        if already_unlocked:
+            continue
+
+        progress = 0
+
+        if achievement["type"] == "quests":
+            progress = completed_quests
+
+        elif achievement["type"] == "level":
+            progress = user.level
+
+        elif achievement["type"] == "coins":
+            progress = user.coins
+
+        elif achievement["type"] == "shop":
+            progress = purchased_items
+
+        if progress >= achievement["target"]:
+
+            if unlock_achievement(
+                user.id,
+                achievement["title"],
+                achievement["description"]
+            ):
+
+                user.coins += achievement["reward"]
+
+                unlocked_now.append({
+                    "title": achievement["title"],
+                    "reward": achievement["reward"]
+                })
+
+    return unlocked_now
 
 def seed_shop():
 

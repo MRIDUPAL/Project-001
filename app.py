@@ -1,15 +1,12 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-
-from models import db, User, Quest, ShopItem, Inventory
-
+from models import db, User, Quest, ShopItem, Inventory, Achievement
 from game_logic import (
     get_rank,
     xp_needed,
-    coin_reward,
-    check_achievements,
-    seed_shop
+    seed_shop,
 )
+from game_engine import GameEngine
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
@@ -89,44 +86,31 @@ def dashboard():
         session.clear()
         return redirect("/login")
 
-    max_xp = xp_needed(user.level)
-
-    progress = (
-        (user.xp / max_xp) * 100
-        if max_xp > 0 else 0
-    )
-
-    rank = get_rank(user.level)
-
-    quests = Quest.query.filter_by(
-        user_id=user.id
-    ).all()
-
-    total_quests = len(quests)
-
-    completed_quests = sum(
-        1 for quest in quests if quest.completed
-    )
-
-    completion_rate = (
-        round((completed_quests / total_quests) * 100)
-        if total_quests > 0 else 0
-    )
+    stats = GameEngine.player_stats(user)
 
     return render_template(
         "dashboard.html",
+
         avatar=user.avatar,
         username=user.username,
-        quests=quests,
+
+        quests=stats["quests"],
+
         xp=user.xp,
         coins=user.coins,
         level=user.level,
-        rank=rank,
-        max_xp=max_xp,
-        progress=progress,
-        total_quests=total_quests,
-        completed_quests=completed_quests,
-        completion_rate=completion_rate
+
+        rank=stats["rank"],
+
+        max_xp=stats["max_xp"],
+
+        progress=stats["progress"],
+
+        total_quests=stats["total_quests"],
+
+        completed_quests=stats["completed_quests"],
+
+        completion_rate=stats["completion_rate"]
     )
 
 @app.route("/shop")
@@ -167,6 +151,25 @@ def shop():
         equipped_ids=equipped_ids
     )
 
+@app.route("/achievements")
+def achievements():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = db.session.get(User, session["user_id"])
+
+    if user is None:
+        session.clear()
+        return redirect("/login")
+
+    achievement_list = GameEngine.achievement_progress(user)
+
+    return render_template(
+        "achievements.html",
+        achievements=achievement_list
+    )
+
 @app.route("/buy/<int:item_id>", methods=["POST"])
 def buy_item(item_id):
 
@@ -184,36 +187,13 @@ def buy_item(item_id):
     if item is None:
         return redirect("/shop")
 
-    owned = Inventory.query.filter_by(
-        user_id=user.id,
-        item_id=item.id
-    ).first()
-
-    if owned:
-        flash("ℹ️ You already own this item.", "info")
-        return redirect("/shop")
-
-    if user.coins < item.price:
-        flash(
-            f"❌ You need {item.price - user.coins} more coins to buy {item.name}.",
-            "danger"
-        )
-        return redirect("/shop")
-
-    user.coins -= item.price
-
-    inventory = Inventory(
-        user_id=user.id,
-        item_id=item.id
+    success, message = GameEngine.buy_item(
+        user,
+        item
     )
 
-    db.session.add(inventory)
-    db.session.commit()
-
-    flash(
-        f"✅ Successfully purchased {item.name}!",
-        "success"
-    )
+    if not success:
+        flash(message, "warning")
 
     return redirect("/shop")
 
@@ -229,39 +209,20 @@ def equip_item(item_id):
         session.clear()
         return redirect("/login")
 
-    inventory_item = Inventory.query.filter_by(
-        user_id=user.id,
-        item_id=item_id
-    ).first()
-
-    if inventory_item is None:
-        flash("❌ You don't own this item.", "danger")
-        return redirect("/shop")
-
     item = db.session.get(ShopItem, item_id)
 
-    if item.category != "Avatar":
-        flash("❌ Only avatars can be equipped right now.", "warning")
+    if item is None:
         return redirect("/shop")
 
-    # Unequip every avatar
-    avatar_items = Inventory.query.join(ShopItem).filter(
-        Inventory.user_id == user.id,
-        ShopItem.category == "Avatar"
-    ).all()
+    success, message = GameEngine.equip_item(
+        user,
+        item
+    )
 
-    for inv in avatar_items:
-        inv.equipped = False
-
-    # Equip selected avatar
-    inventory_item.equipped = True
-
-    # Update user's avatar
-    user.avatar = item.icon
-
-    db.session.commit()
-
-    flash(f"✅ {item.name} equipped!", "success")
+    flash(
+        message,
+        "success" if success else "warning"
+    )
 
     return redirect("/shop")
 
@@ -274,22 +235,17 @@ def add_quest():
     title = request.form["title"]
     difficulty = request.form["difficulty"]
 
-    xp_values = {
-        "Easy": 25,
-        "Medium": 50,
-        "Hard": 100,
-        "Epic": 250
-    }
+    user = db.session.get(User, session["user_id"])
 
-    quest = Quest(
-        title=title,
-        difficulty=difficulty,
-        xp=xp_values[difficulty],
-        user_id=session["user_id"]
+    if user is None:
+        session.clear()
+        return redirect("/login")
+
+    GameEngine.add_quest(
+        user,
+        title,
+        difficulty
     )
-
-    db.session.add(quest)
-    db.session.commit()
 
     return redirect("/dashboard")
 
@@ -308,50 +264,16 @@ def complete_quest(quest_id):
     if quest.user_id != session["user_id"]:
         return redirect("/dashboard")
 
+    user = db.session.get(User, session["user_id"])
+
+    if user is None:
+        session.clear()
+        return redirect("/login")
+
     if not quest.completed:
-
-        quest.completed = True
-
-        user = db.session.get(User, session["user_id"])
-
-        if user is None:
-            session.clear()
-            return redirect("/login")
-
-        # XP
-        user.xp += quest.xp
-
-        # Coins
-        user.coins += coin_reward(quest.difficulty)
-
-        # Achievements
-        check_achievements(user)
-
-        # Level Up
-        # Level Up
-        needed = xp_needed(user.level)
-
-        while user.xp >= needed:
-
-            user.xp -= needed
-            user.level += 1
-
-            flash(
-                f"⭐ Level Up! You reached Level {user.level}.",
-                "success"
-            )
-
-            needed = xp_needed(user.level)
-
-        db.session.commit()
-        
-        flash(
-            f"🎉 Quest completed! +{quest.xp} XP, +{coin_reward(quest.difficulty)} Coins",
-            "success"
-        )
+        GameEngine.complete_quest(user, quest)
 
     return redirect("/dashboard")
-
 
 @app.route("/logout")
 def logout():
