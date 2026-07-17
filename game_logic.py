@@ -155,7 +155,8 @@ def check_achievements(user):
             progress = user.level
 
         elif achievement["type"] == "coins":
-            progress = user.coins
+            # Use lifetime coins earned instead of current balance
+            progress = user.total_coins_earned
 
         elif achievement["type"] == "shop":
             progress = purchased_items
@@ -168,8 +169,21 @@ def check_achievements(user):
                 achievement["description"]
             ):
 
-                user.coins += achievement["reward"]
+                print("========== ACHIEVEMENT ==========")
+                print("Before:")
+                print("Coins:", user.coins)
+                print("Lifetime:", user.total_coins_earned)
 
+                user.coins += achievement["reward"]
+                user.total_coins_earned += achievement["reward"]
+
+                print("Reward:", achievement["reward"])
+
+                print("After:")
+                print("Coins:", user.coins)
+                print("Lifetime:", user.total_coins_earned)
+                print("=================================")
+                
                 unlocked_now.append({
                     "title": achievement["title"],
                     "reward": achievement["reward"]

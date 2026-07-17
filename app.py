@@ -113,6 +113,26 @@ def dashboard():
         completion_rate=stats["completion_rate"]
     )
 
+@app.route("/profile")
+def profile():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = User.query.get(session["user_id"])
+
+    if user is None:
+        flash("Please login first.", "warning")
+        return redirect("/login")
+
+    stats = GameEngine.player_stats(user)
+
+    return render_template(
+        "profile.html",
+        user=user,
+        stats=stats
+    )
+
 @app.route("/shop")
 def shop():
 

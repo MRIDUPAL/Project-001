@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-lg">
+
+        <div class="card-body text-center">
+
+            <h1 class="display-1">
+                {{ stats.avatar }}
+            </h1>
+
+            <h2>{{ user.username }}</h2>
+
+            <h5 class="text-warning">
+                👑 {{ stats.equipped_title }}
+            </h5>
+
+            <p class="text-muted">
+                {{ stats.rank }}
+            </p>
+
+            <hr>
+
+            <h5>
+                ⭐ Level {{ stats.level }}
+            </h5>
+
+            <div class="progress mb-3">
+
+                <div
+                    class="progress-bar bg-success"
+                    role="progressbar"
+                    style="width: {{ stats.progress }}%;">
+
+                    {{ stats.xp }}/{{ stats.max_xp }}
+
+                </div>
+
+            </div>
+
+            <h5>
+                🪙 {{ stats.coins }} Coins
+            </h5>
+
+            <h6>
+                🔥 Streak: {{ stats.streak }}
+            </h6>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    📊 Lifetime Statistics
+
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+                        ⭐ Total XP Earned:
+                        <strong>{{ stats.total_xp_earned }}</strong>
+                    </p>
+
+                    <p>
+                        🪙 Total Coins Earned:
+                        <strong>{{ stats.total_coins_earned }}</strong>
+                    </p>
+
+                    <p>
+                        ✅ Completed Quests:
+                        <strong>{{ stats.completed_quests }}</strong>
+                    </p>
+
+                    <p>
+                        📋 Total Quests:
+                        <strong>{{ stats.total_quests }}</strong>
+                    </p>
+
+                    <p>
+                        📈 Completion Rate:
+                        <strong>{{ stats.completion_rate }}%</strong>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    🏆 Player Summary
+
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+                        🏅 Rank:
+                        <strong>{{ stats.rank }}</strong>
+                    </p>
+
+                    <p>
+                        🏆 Achievements:
+                        <strong>{{ stats.achievement_count }}</strong>
+                    </p>
+
+                    <p>
+                        🎒 Inventory:
+                        <strong>{{ stats.inventory_count }}</strong>
+                    </p>
+
+                    <p>
+                        🎨 Theme:
+                        <strong>{{ stats.selected_theme }}</strong>
+                    </p>
+
+                    <p>
+                        📅 Joined:
+                        <strong>{{ stats.joined_at.strftime('%d %b %Y') }}</strong>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

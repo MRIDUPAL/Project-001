@@ -69,19 +69,31 @@ class GameEngine:
 
         return {
 
+            # Dashboard
             "quests": quests,
-
             "rank": get_rank(user.level),
-
             "max_xp": max_xp,
-
             "progress": progress,
-
             "total_quests": total_quests,
-
             "completed_quests": completed_quests,
+            "completion_rate": completion_rate,
 
-            "completion_rate": completion_rate
+            # Profile
+            "level": user.level,
+            "xp": user.xp,
+            "coins": user.coins,
+            "avatar": user.avatar,
+            "streak": user.streak,
+
+            "total_xp_earned": user.total_xp_earned,
+            "total_coins_earned": user.total_coins_earned,
+
+            "equipped_title": user.equipped_title,
+            "selected_theme": user.selected_theme,
+            "joined_at": user.joined_at,
+
+            "achievement_count": len(user.achievements),
+            "inventory_count": len(user.inventory)
 
         }
 
@@ -184,11 +196,16 @@ class GameEngine:
         # Complete quest
         quest.completed = True
 
-        # XP reward
-        user.xp += quest.xp
+        # Calculate rewards
+        earned_coins = coin_reward(quest.difficulty)
 
-        # Coin reward
-        user.coins += coin_reward(quest.difficulty)
+        # Give rewards
+        user.xp += quest.xp
+        user.coins += earned_coins
+
+        # Lifetime statistics
+        user.total_xp_earned += quest.xp
+        user.total_coins_earned += earned_coins
 
         # Level Up
         needed = xp_needed(user.level)
@@ -205,16 +222,17 @@ class GameEngine:
 
             needed = xp_needed(user.level)
 
-        # Process player systems
+        # Process achievements and other player systems
         new_achievements = GameEngine.process_player(user)
 
-        # Notifications
+        # Show achievement notifications
         GameEngine.notify(new_achievements)
 
+        # Quest completion message
         flash(
             f"🎉 Quest completed! "
             f"+{quest.xp} XP "
-            f"and +{coin_reward(quest.difficulty)} Coins.",
+            f"and +{earned_coins} Coins.",
             "success"
         )
 

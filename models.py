@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -8,20 +9,75 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    username = db.Column(db.String(50), unique=True, nullable=False)
+    username = db.Column(
+        db.String(50),
+        unique=True,
+        nullable=False
+    )
 
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    email = db.Column(
+        db.String(120),
+        unique=True,
+        nullable=False
+    )
 
-    password = db.Column(db.String(255), nullable=False)
+    password = db.Column(
+        db.String(255),
+        nullable=False
+    )
+
+    # ------------------------
+    # Player Progress
+    # ------------------------
 
     level = db.Column(db.Integer, default=1)
+
     xp = db.Column(db.Integer, default=0)
+
     coins = db.Column(db.Integer, default=0)
+
     avatar = db.Column(
-    db.String(20),
-    default="🎮"
+        db.String(20),
+        default="🎮"
     )
-    streak = db.Column(db.Integer, default=0)
+
+    streak = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    # ------------------------
+    # Profile Statistics
+    # ------------------------
+
+    total_xp_earned = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    total_coins_earned = db.Column(
+        db.Integer,
+        default=0
+    )
+
+    equipped_title = db.Column(
+        db.String(100),
+        default="Adventurer"
+    )
+
+    selected_theme = db.Column(
+        db.String(100),
+        default="Default"
+    )
+
+    joined_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    # ------------------------
+    # Relationships
+    # ------------------------
 
     quests = db.relationship(
         "Quest",
