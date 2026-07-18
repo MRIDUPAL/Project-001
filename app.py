@@ -61,6 +61,14 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
 
+        if User.query.filter_by(email=email).first():
+            flash("Email already registered.", "warning")
+            return redirect("/register")
+
+        if User.query.filter_by(username=username).first():
+            flash("Username already taken.", "warning")
+            return redirect("/register")
+
         new_user = User(
             username=username,
             email=email,
@@ -69,6 +77,8 @@ def register():
 
         db.session.add(new_user)
         db.session.commit()
+
+        GameEngine.create_default_quests(new_user)
 
         return redirect("/login")
 

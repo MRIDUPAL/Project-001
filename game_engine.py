@@ -1,5 +1,5 @@
 from flask import flash
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 from models import (
     db,
     Quest,
@@ -171,7 +171,8 @@ class GameEngine:
         difficulty,
         category,
         quest_type,
-        due_date
+        due_date,
+        show_flash=True
     ):
 
         xp_values = {
@@ -181,21 +182,24 @@ class GameEngine:
             "Epic": 250
         }
 
-        # Convert due date string to Python date
-        if due_date:
+        # Convert due date string to Python date if needed
+        if isinstance(due_date, str) and due_date:
             due_date = datetime.strptime(
                 due_date,
                 "%Y-%m-%d"
             ).date()
 
+        # Prevent backdated Limited-Time quests
         if (
             quest_type == "Limited-Time"
+            and due_date is not None
             and due_date < datetime.now().date()
         ):
-            flash(
-                "⏳ Due date cannot be in the past.",
-                "warning"
-            )
+            if show_flash:
+                flash(
+                    "⏳ Due date cannot be in the past.",
+                    "warning"
+                )
             return
 
         quest = Quest(
@@ -212,10 +216,76 @@ class GameEngine:
         db.session.add(quest)
         db.session.commit()
 
-        flash(
-            f"📜 Quest '{title}' added!",
-            "success"
-        )
+        if show_flash:
+            flash(
+                f"📜 Quest '{title}' added!",
+                "success"
+            )
+
+    @staticmethod
+    def create_default_quests(user):
+
+        default_quests = [
+
+            {
+                "title": "Complete your first quest",
+                "description": "Finish any quest to begin your adventure.",
+                "difficulty": "Easy",
+                "category": "Personal",
+                "quest_type": "One-Time",
+                "due_date": None
+            },
+
+            {
+                "title": "Study for 1 hour",
+                "description": "Spend one focused hour studying.",
+                "difficulty": "Medium",
+                "category": "Study",
+                "quest_type": "Daily",
+                "due_date": None
+            },
+
+            {
+                "title": "Exercise for 30 minutes",
+                "description": "Stay active and keep your streak alive.",
+                "difficulty": "Medium",
+                "category": "Fitness",
+                "quest_type": "Daily",
+                "due_date": None
+            },
+
+            {
+                "title": "Clean your room",
+                "description": "Organize your surroundings.",
+                "difficulty": "Easy",
+                "category": "Personal",
+                "quest_type": "Weekly",
+                "due_date": None
+            },
+
+            {
+                "title": "Finish this week's challenge",
+                "description": "Complete before the deadline.",
+                "difficulty": "Hard",
+                "category": "Work",
+                "quest_type": "Limited-Time",
+                "due_date": date.today() + timedelta(days=7)
+            }
+
+        ]
+
+        for quest in default_quests:
+            print("Creating default quests...")
+            GameEngine.add_quest(
+                user=user,
+                title=quest["title"],
+                description=quest["description"],
+                difficulty=quest["difficulty"],
+                category=quest["category"],
+                quest_type=quest["quest_type"],
+                due_date=quest["due_date"],
+                show_flash=False
+            )
 
     @staticmethod
     def complete_quest(user, quest):
