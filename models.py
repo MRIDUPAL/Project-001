@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 db = SQLAlchemy()
 
@@ -100,13 +100,66 @@ class Quest(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    title = db.Column(db.String(100), nullable=False)
+    # ------------------------
+    # Quest Information
+    # ------------------------
 
-    difficulty = db.Column(db.String(20), nullable=False)
+    title = db.Column(
+        db.String(100),
+        nullable=False
+    )
 
-    xp = db.Column(db.Integer, nullable=False)
+    description = db.Column(
+        db.Text,
+        default=""
+    )
 
-    completed = db.Column(db.Boolean, default=False)
+    category = db.Column(
+        db.String(30),
+        default="Personal"
+    )
+
+    difficulty = db.Column(
+        db.String(20),
+        nullable=False
+    )
+
+    quest_type = db.Column(
+        db.String(20),
+        default="One-Time"
+    )
+
+    # ------------------------
+    # Rewards
+    # ------------------------
+
+    xp = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    # ------------------------
+    # Progress
+    # ------------------------
+
+    completed = db.Column(
+        db.Boolean,
+        default=False
+    )
+
+    due_date = db.Column(
+        db.Date,
+        nullable=True
+    )
+
+    completed_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    # ------------------------
+    # Ownership
+    # ------------------------
 
     user_id = db.Column(
         db.Integer,

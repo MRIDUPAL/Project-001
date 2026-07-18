@@ -151,6 +151,38 @@
                         placeholder="Quest Title"
                         required>
 
+                    <textarea
+                        name="description"
+                        class="form-control mb-3"
+                        placeholder="Quest Description (optional)"
+                        rows="3"></textarea>
+                    
+                    <select
+                        name="category"
+                        class="form-select mb-3">
+
+                        <option value="Personal">
+                            🏠 Personal
+                        </option>
+
+                        <option value="Study">
+                            📚 Study
+                        </option>
+
+                        <option value="Fitness">
+                            💪 Fitness
+                        </option>
+
+                        <option value="Work">
+                            💼 Work
+                        </option>
+
+                        <option value="Hobby">
+                            🎮 Hobby
+                        </option>
+
+                    </select>
+
                     <select
                         name="difficulty"
                         class="form-select mb-3">
@@ -173,6 +205,37 @@
 
                     </select>
 
+                    <select
+                        name="quest_type"
+                        class="form-select mb-3">
+
+                        <option value="One-Time">
+                            ⚔️ One-Time
+                        </option>
+
+                        <option value="Daily">
+                            🔁 Daily
+                        </option>
+
+                        <option value="Weekly">
+                            📅 Weekly
+                        </option>
+
+                        <option value="Limited-Time">
+                            ⏳ Limited-Time
+                        </option>
+
+                    </select>
+
+                    <label class="form-label">
+                        Due Date (Optional for One-Time, Required for Limited-Time)
+                    </label>
+
+                    <input
+                        type="date"
+                        name="due_date"
+                        class="form-control mb-3">
+
                     <button class="btn btn-success w-100">
 
                         Add Quest
@@ -193,7 +256,7 @@
 
                     <i class="bi bi-list-check"></i>
 
-                    Today's Quests
+                    Active Quests
 
                 </h3>
 
@@ -209,7 +272,63 @@
 
                                 <h4>{{ quest.title }}</h4>
 
+                                {% if quest.description %}
+                                <p class="text-muted mb-2">
+                                    {{ quest.description }}
+                                </p>
+                                {% endif %}
+
                                 <p class="mb-2">
+                                    
+                                    <h4>{{ quest.title }}</h4>
+
+                                    {% if quest.description %}
+                                    <p class="text-muted mb-2">
+                                        {{ quest.description }}
+                                    </p>
+                                    {% endif %}
+
+                                    <!-- NEW -->
+                                    <div class="mb-2">
+
+                                        <span class="badge bg-primary">
+                                            {{ quest.category }}
+                                        </span>
+
+                                        <span class="badge bg-dark">
+                                            {{ quest.quest_type }}
+                                        </span>
+
+                                        {% if quest.due_date %}
+                                            <span class="badge bg-secondary">
+                                                📅 {{ quest.due_date.strftime("%d %b %Y") }}
+                                            </span>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <!-- KEEP YOUR EXISTING CODE -->
+                                    <p class="mb-2">
+
+                                        {% if quest.difficulty == "Easy" %}
+
+                                            ...
+
+                                        {% elif quest.difficulty == "Medium" %}
+
+                                            ...
+
+                                        {% elif quest.difficulty == "Hard" %}
+
+                                            ...
+
+                                        {% elif quest.difficulty == "Epic" %}
+
+                                            ...
+
+                                        {% endif %}
+
+                                    </p>
 
                                     {% if quest.difficulty == "Easy" %}
 

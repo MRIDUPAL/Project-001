@@ -86,6 +86,7 @@ def dashboard():
         session.clear()
         return redirect("/login")
 
+    GameEngine.reset_recurring_quests(user)
     stats = GameEngine.player_stats(user)
 
     return render_template(
@@ -287,8 +288,24 @@ def add_quest():
     if "user_id" not in session:
         return redirect("/login")
 
-    title = request.form["title"]
+    title = request.form["title"].strip()
+    description = request.form.get("description", "").strip()
     difficulty = request.form["difficulty"]
+    category = request.form["category"]
+    quest_type = request.form["quest_type"]
+
+    due_date = request.form.get("due_date")
+
+    if due_date == "":
+        due_date = None
+
+    # Validate quest type
+    if quest_type in ["One-Time", "Limited-Time"] and due_date is None:
+        flash(
+            f"⏳ {quest_type} quests require a due date.",
+            "warning"
+        )
+        return redirect("/dashboard")
 
     user = db.session.get(User, session["user_id"])
 
@@ -297,13 +314,16 @@ def add_quest():
         return redirect("/login")
 
     GameEngine.add_quest(
-        user,
-        title,
-        difficulty
+        user=user,
+        title=title,
+        description=description,
+        difficulty=difficulty,
+        category=category,
+        quest_type=quest_type,
+        due_date=due_date
     )
 
     return redirect("/dashboard")
-
 
 @app.route("/complete/<int:quest_id>", methods=["POST"])
 def complete_quest(quest_id):

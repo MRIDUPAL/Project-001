@@ -1,5 +1,5 @@
 from flask import flash
-
+from datetime import datetime, timedelta
 from models import (
     db,
     Quest,
@@ -163,7 +163,15 @@ class GameEngine:
         return achievement_list
 
     @staticmethod
-    def add_quest(user, title, difficulty):
+    def add_quest(
+        user,
+        title,
+        description,
+        difficulty,
+        category,
+        quest_type,
+        due_date
+    ):
 
         xp_values = {
             "Easy": 25,
@@ -172,9 +180,20 @@ class GameEngine:
             "Epic": 250
         }
 
+        # Convert due date string to Python date
+        if due_date:
+            due_date = datetime.strptime(
+                due_date,
+                "%Y-%m-%d"
+            ).date()
+
         quest = Quest(
             title=title,
+            description=description,
             difficulty=difficulty,
+            category=category,
+            quest_type=quest_type,
+            due_date=due_date,
             xp=xp_values[difficulty],
             user_id=user.id
         )
@@ -195,6 +214,7 @@ class GameEngine:
 
         # Complete quest
         quest.completed = True
+        quest.completed_at = datetime.now()
 
         # Calculate rewards
         earned_coins = coin_reward(quest.difficulty)
@@ -235,6 +255,44 @@ class GameEngine:
             f"and +{earned_coins} Coins.",
             "success"
         )
+
+    @staticmethod
+    def reset_recurring_quests(user):
+
+        now = datetime.now()
+
+        quests = Quest.query.filter_by(
+            user_id=user.id
+        ).all()
+
+        changed = False
+
+        for quest in quests:
+
+            if not quest.completed:
+                continue
+
+            if quest.completed_at is None:
+                continue
+
+            # Daily quests
+            if quest.quest_type == "Daily":
+
+                if quest.completed_at.date() < now.date():
+                    quest.completed = False
+                    quest.completed_at = None
+                    changed = True
+
+            # Weekly quests
+            elif quest.quest_type == "Weekly":
+
+                if now - quest.completed_at >= timedelta(days=7):
+                    quest.completed = False
+                    quest.completed_at = None
+                    changed = True
+
+        if changed:
+            db.session.commit()
 
     @staticmethod
     def buy_item(user, item):
