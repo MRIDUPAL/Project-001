@@ -260,6 +260,35 @@
 
                 </h3>
 
+                <div class="btn-group mb-3" role="group">
+
+                    <a href="/dashboard"
+                    class="btn {% if current_filter == 'All' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                        All
+                    </a>
+
+                    <a href="/dashboard?filter=Daily"
+                    class="btn {% if current_filter == 'Daily' %}btn-success{% else %}btn-outline-success{% endif %}">
+                        Daily
+                    </a>
+
+                    <a href="/dashboard?filter=Weekly"
+                    class="btn {% if current_filter == 'Weekly' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                        Weekly
+                    </a>
+
+                    <a href="/dashboard?filter=One-Time"
+                    class="btn {% if current_filter == 'One-Time' %}btn-info{% else %}btn-outline-info{% endif %}">
+                        One-Time
+                    </a>
+
+                    <a href="/dashboard?filter=Limited-Time"
+                    class="btn {% if current_filter == 'Limited-Time' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                        Limited-Time
+                    </a>
+
+                </div>
+
                 {% if quests %}
 
                     {% for quest in quests %}
@@ -273,22 +302,11 @@
                                 <h4>{{ quest.title }}</h4>
 
                                 {% if quest.description %}
-                                <p class="text-muted mb-2">
-                                    {{ quest.description }}
-                                </p>
-                                {% endif %}
-
-                                <p class="mb-2">
-                                    
-                                    <h4>{{ quest.title }}</h4>
-
-                                    {% if quest.description %}
                                     <p class="text-muted mb-2">
                                         {{ quest.description }}
                                     </p>
-                                    {% endif %}
+                                {% endif %}
 
-                                    <!-- NEW -->
                                     <div class="mb-2">
 
                                         <span class="badge bg-primary">
@@ -306,30 +324,7 @@
                                         {% endif %}
 
                                     </div>
-
-                                    <!-- KEEP YOUR EXISTING CODE -->
-                                    <p class="mb-2">
-
-                                        {% if quest.difficulty == "Easy" %}
-
-                                            ...
-
-                                        {% elif quest.difficulty == "Medium" %}
-
-                                            ...
-
-                                        {% elif quest.difficulty == "Hard" %}
-
-                                            ...
-
-                                        {% elif quest.difficulty == "Epic" %}
-
-                                            ...
-
-                                        {% endif %}
-
-                                    </p>
-
+                                
                                     {% if quest.difficulty == "Easy" %}
 
                                         <span class="badge bg-success">
@@ -387,8 +382,6 @@
                                         </span>
 
                                     {% endif %}
-
-                                </p>
 
                             </div>
 

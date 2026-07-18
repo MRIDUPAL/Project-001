@@ -90,7 +90,23 @@ def dashboard():
     GameEngine.reset_recurring_quests(user)
     GameEngine.expire_limited_time_quests(user)
 
+    filter_type = request.args.get(
+        "filter",
+        "All"
+    )
+
     stats = GameEngine.player_stats(user)
+
+    quests = stats["quests"]
+
+    if filter_type != "All":
+        quests = [
+            quest
+            for quest in quests
+            if quest.quest_type == filter_type
+        ]
+
+    stats["quests"] = quests
 
     return render_template(
         "dashboard.html",
@@ -114,7 +130,9 @@ def dashboard():
 
         completed_quests=stats["completed_quests"],
 
-        completion_rate=stats["completion_rate"]
+        completion_rate=stats["completion_rate"],
+
+        current_filter=filter_type
     )
 
 @app.route("/profile")
