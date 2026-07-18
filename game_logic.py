@@ -236,7 +236,7 @@ def seed_shop():
         ),
 
         ShopItem(
-            name="Neon Theme",
+            name="ocean Theme",
             description="Unlock a glowing interface.",
             icon="🌌",
             category="Theme",

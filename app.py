@@ -17,6 +17,19 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
+@app.context_processor
+def inject_current_user():
+
+    if "user_id" in session:
+
+        user = db.session.get(User, session["user_id"])
+
+    else:
+
+        user = None
+
+    return dict(current_user=user)
+
 with app.app_context():
     db.create_all()
     seed_shop()

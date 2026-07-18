@@ -1,20 +1,138 @@
 /* ==========================================
+   THEME VARIABLES
+========================================== */
+
+:root,
+.theme-default{
+
+    --bg:#0D1117;
+    --surface:#161B22;
+    --border:#30363D;
+
+    --text:#F8FAFC;
+    --text-muted:#D1D5DB;
+    --placeholder:#8B949E;
+
+    --primary:var(--primary);
+    --primary-hover:var(--primary-hover);
+
+    --accent:var(--accent);
+
+    --warning:var(--warning);
+}
+
+.theme-purple{
+
+    --bg:#0D1117;
+    --surface:#161B22;
+    --border:#30363D;
+
+    --text:#F8FAFC;
+    --text-muted:#D1D5DB;
+    --placeholder:#8B949E;
+
+    --primary:#7C3AED;
+    --primary-hover:#6D28D9;
+    --accent:#A855F7;
+
+    --warning:#FACC15;
+}
+
+.theme-emerald{
+
+    --bg:#071A13;
+    --surface:#0E2A20;
+    --border:#1E4D3A;
+
+    --text:#F8FAFC;
+    --text-muted:#C9EAD8;
+    --placeholder:#8CBFA8;
+
+    --primary:#10B981;
+    --primary-hover:#059669;
+    --accent:#34D399;
+
+    --warning:#FACC15;
+}
+
+.theme-ocean{
+
+    --bg:#08131F;
+    --surface:#102235;
+    --border:#274867;
+
+    --text:#F8FAFC;
+    --text-muted:#C5D8F2;
+    --placeholder:#91A8C7;
+
+    --primary:#3B82F6;
+    --primary-hover:#2563EB;
+    --accent:#60A5FA;
+
+    --warning:#FACC15;
+}
+
+.theme-crimson{
+
+    --bg:#18090A;
+    --surface:#2B1113;
+    --border:#4D1E22;
+
+    --text:#F8FAFC;
+    --text-muted:#F0D1D4;
+    --placeholder:#C79AA0;
+
+    --primary:#DC2626;
+    --primary-hover:#B91C1C;
+    --accent:#EF4444;
+
+    --warning:#FACC15;
+}
+
+.theme-night{
+
+    --bg:#000000;
+    --surface:#111111;
+    --border:#222222;
+
+    --text:#F8FAFC;
+    --text-muted:#D1D5DB;
+    --placeholder:#9CA3AF;
+
+    --primary:#6366F1;
+    --primary-hover:#4F46E5;
+    --accent:#818CF8;
+
+    --warning:#FACC15;
+}
+
+/* ==========================================
    QUESTIFY - STYLE.CSS
 ========================================== */
 
 /* ---------- GLOBAL ---------- */
 
 body{
-    background:#0D1117;
-    color:#F8FAFC;
+    ...
+}
+
+/* ==========================================
+   QUESTIFY - STYLE.CSS
+========================================== */
+
+/* ---------- GLOBAL ---------- */
+
+body{
+    background:var(--bg);
+    color:var(--text);
     font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
 }
 
 /* ---------- NAVBAR ---------- */
 
 .navbar{
-    background:#161B22 !important;
-    border-bottom:2px solid #7C3AED;
+    background:var(--surface) !important;
+    border-bottom:2px solid var(--primary);
     padding:15px 0;
 }
 
@@ -27,32 +145,32 @@ body{
 /* ---------- CARDS ---------- */
 
 .card{
-    background:#161B22;
-    border:1px solid #30363D;
+    background:var(--surface);
+    border:1px solid var(--border);
     border-radius:18px;
-    color:#FFF;
+    color:var(--text);
     transition:.25s;
     box-shadow:0 0 18px rgba(124,58,237,.15);
 }
 
 .card:hover{
     transform:translateY(-5px);
-    border-color:#7C3AED;
+    border-color:var(--primary);
     box-shadow:0 0 30px rgba(124,58,237,.35);
 }
 
 /* ---------- PLAYER MINI CARDS ---------- */
 
 .card .card{
-    background:#0D1117;
-    border:1px solid #30363D;
+    background:var(--bg);
+    border:1px solid var(--border);
     border-radius:14px;
     transition:.2s;
 }
 
 .card .card:hover{
     transform:scale(1.05);
-    border-color:#7C3AED;
+    border-color:var(--primary);
 }
 
 .card .card h4{
@@ -72,34 +190,34 @@ body{
 /* ---------- HEADINGS ---------- */
 
 h1,h2,h3,h4,h5{
-    color:#FFF;
+    color:var(--text);
     font-weight:700;
 }
 
 /* ---------- TEXT ---------- */
 
 p{
-    color:#D1D5DB;
+    color:var(--text-muted);
 }
 
 /* ---------- FORMS ---------- */
 
 .form-control,
 .form-select{
-    background:#0D1117;
-    color:#FFF;
-    border:1px solid #30363D;
+    background:var(--bg);
+    color:var(--text);
+    border:1px solid var(--border);
 }
 
 .form-control::placeholder{
-    color:#8B949E;
+    color:var(--placeholder);
 }
 
 .form-control:focus,
 .form-select:focus{
-    background:#0D1117;
-    color:#FFF;
-    border-color:#7C3AED;
+    background:var(--bg);
+    color:var(--text);
+    border-color:var(--primary);
     box-shadow:0 0 10px rgba(124,58,237,.4);
 }
 
@@ -114,25 +232,25 @@ p{
 }
 
 .btn-success{
-    background:#7C3AED;
+    background:var(--primary);
     border:none;
 }
 
 .btn-success:hover{
-    background:#6D28D9;
+    background:var(--primary-hover);
 }
 
 .btn-primary{
-    background:#7C3AED;
+    background:var(--primary);
     border:none;
 }
 
 .btn-primary:hover{
-    background:#6D28D9;
+    background:var(--primary-hover);
 }
 
 .btn-warning{
-    background:#FACC15;
+    background:var(--warning);
     color:#000;
     border:none;
 }
@@ -153,8 +271,8 @@ p{
 .progress-bar{
     background:linear-gradient(
         90deg,
-        #7C3AED,
-        #A855F7
+        var(--primary),
+        var(--accent)
     );
     transition:width .6s ease;
 }
@@ -170,7 +288,7 @@ p{
 /* ---------- COINS ---------- */
 
 .text-warning{
-    color:#FACC15 !important;
+    color:var(--warning) !important;
     text-shadow:0 0 10px rgba(250,204,21,.45);
 }
 
@@ -181,7 +299,7 @@ p{
 }
 
 .card.mt-3:hover{
-    border-color:#7C3AED;
+    border-color:var(--primary);
 }
 
 /* ---------- LINKS ---------- */
@@ -197,16 +315,16 @@ a{
 }
 
 ::-webkit-scrollbar-track{
-    background:#161B22;
+    background:var(--surface);
 }
 
 ::-webkit-scrollbar-thumb{
-    background:#7C3AED;
+    background:var(--primary);
     border-radius:20px;
 }
 
 ::-webkit-scrollbar-thumb:hover{
-    background:#A855F7;
+    background:var(--accent);
 }
 
 /* ---------- RESPONSIVE ---------- */
