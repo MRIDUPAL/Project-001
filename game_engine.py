@@ -43,7 +43,8 @@ class GameEngine:
     def player_stats(user):
 
         quests = Quest.query.filter_by(
-            user_id=user.id
+            user_id=user.id,
+            expired=False
         ).all()
 
         total_quests = len(quests)
@@ -187,6 +188,16 @@ class GameEngine:
                 "%Y-%m-%d"
             ).date()
 
+        if (
+            quest_type == "Limited-Time"
+            and due_date < datetime.now().date()
+        ):
+            flash(
+                "⏳ Due date cannot be in the past.",
+                "warning"
+            )
+            return
+
         quest = Quest(
             title=title,
             description=description,
@@ -290,6 +301,32 @@ class GameEngine:
                     quest.completed = False
                     quest.completed_at = None
                     changed = True
+
+        if changed:
+            db.session.commit()
+
+    @staticmethod
+    def expire_limited_time_quests(user):
+
+        today = datetime.now().date()
+
+        quests = Quest.query.filter_by(
+            user_id=user.id,
+            quest_type="Limited-Time",
+            expired=False
+        ).all()
+
+        changed = False
+
+        for quest in quests:
+
+            if (
+                not quest.completed
+                and quest.due_date
+                and quest.due_date < today
+            ):
+                quest.expired = True
+                changed = True
 
         if changed:
             db.session.commit()

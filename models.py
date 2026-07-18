@@ -157,6 +157,11 @@ class Quest(db.Model):
         nullable=True
     )
 
+    expired = db.Column(
+    db.Boolean,
+    default=False
+    )
+
     # ------------------------
     # Ownership
     # ------------------------

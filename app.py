@@ -7,6 +7,7 @@ from game_logic import (
     seed_shop,
 )
 from game_engine import GameEngine
+from datetime import datetime, date
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
@@ -87,6 +88,8 @@ def dashboard():
         return redirect("/login")
 
     GameEngine.reset_recurring_quests(user)
+    GameEngine.expire_limited_time_quests(user)
+
     stats = GameEngine.player_stats(user)
 
     return render_template(
@@ -299,13 +302,34 @@ def add_quest():
     if due_date == "":
         due_date = None
 
-    # Validate quest type
-    if quest_type in ["One-Time", "Limited-Time"] and due_date is None:
+    # -------------------------
+    # Validation
+    # -------------------------
+
+    if quest_type == "Limited-Time" and due_date is None:
         flash(
-            f"⏳ {quest_type} quests require a due date.",
+            "⏳ Limited-Time quests require a due date.",
             "warning"
         )
         return redirect("/dashboard")
+
+    if due_date:
+
+        parsed_due_date = datetime.strptime(
+            due_date,
+            "%Y-%m-%d"
+        ).date()
+
+        if parsed_due_date < date.today():
+
+            flash(
+                "⏳ Due date cannot be in the past.",
+                "warning"
+            )
+
+            return redirect("/dashboard")
+
+    # -------------------------
 
     user = db.session.get(User, session["user_id"])
 
