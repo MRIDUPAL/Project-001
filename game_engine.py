@@ -293,26 +293,26 @@ class GameEngine:
                 "❌ You don't own this item."
             )
 
-        if item.category != "Avatar":
-            return (
-                False,
-                "❌ Only avatars can be equipped right now."
-            )
-
-        # Unequip every avatar
-        avatar_items = Inventory.query.join(ShopItem).filter(
+        # Unequip all items of the same category
+        same_category = Inventory.query.join(ShopItem).filter(
             Inventory.user_id == user.id,
-            ShopItem.category == "Avatar"
+            ShopItem.category == item.category
         ).all()
 
-        for avatar in avatar_items:
-            avatar.equipped = False
+        for inv in same_category:
+            inv.equipped = False
 
-        # Equip selected avatar
         owned_item.equipped = True
 
-        # Update player's avatar
-        user.avatar = item.icon
+        # Update player profile
+        if item.category == "Avatar":
+            user.avatar = item.icon
+
+        elif item.category == "Title":
+            user.equipped_title = item.name
+
+        elif item.category == "Theme":
+            user.selected_theme = item.name
 
         db.session.commit()
 

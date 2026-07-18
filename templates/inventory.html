@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">🎒 Your Inventory</h2>
+
+    <!-- Avatars -->
+    <h3 class="mb-3">👤 Avatars</h3>
+
+    <div class="row">
+        {% for inv in avatars %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center">
+
+                <div class="card-body">
+
+                    <h1>{{ inv.item.icon }}</h1>
+
+                    <h5>{{ inv.item.name }}</h5>
+
+                    <p>{{ inv.item.description }}</p>
+
+                    <span class="badge bg-secondary">
+                        {{ inv.item.rarity }}
+                    </span>
+
+                    <hr>
+
+                    {% if inv.equipped %}
+
+                        <button class="btn btn-success" disabled>
+                            Equipped
+                        </button>
+
+                    {% else %}
+
+                        <form action="/equip/{{ inv.item.id }}" method="POST">
+
+                            <button class="btn btn-primary">
+                                Equip
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+        {% else %}
+        <p>You don't own any avatars yet.</p>
+        {% endfor %}
+    </div>
+
+    <hr class="my-5">
+
+    <!-- Titles -->
+    <h3 class="mb-3">🏷 Titles</h3>
+
+    <div class="row">
+        {% for inv in titles %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center">
+
+                <div class="card-body">
+
+                    <h5>{{ inv.item.name }}</h5>
+
+                    <p>{{ inv.item.description }}</p>
+
+                    <span class="badge bg-secondary">
+                        {{ inv.item.rarity }}
+                    </span>
+
+                    <hr>
+
+                    {% if inv.equipped %}
+
+                        <button class="btn btn-success" disabled>
+                            Equipped
+                        </button>
+
+                    {% else %}
+
+                        <form action="/equip/{{ inv.item.id }}" method="POST">
+
+                            <button class="btn btn-primary">
+                                Equip
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+        {% else %}
+        <p>You don't own any titles yet.</p>
+        {% endfor %}
+    </div>
+
+    <hr class="my-5">
+
+    <!-- Themes -->
+    <h3 class="mb-3">🎨 Themes</h3>
+
+    <div class="row">
+        {% for inv in themes %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center">
+
+                <div class="card-body">
+
+                    <h5>{{ inv.item.name }}</h5>
+
+                    <p>{{ inv.item.description }}</p>
+
+                    <span class="badge bg-secondary">
+                        {{ inv.item.rarity }}
+                    </span>
+
+                    <hr>
+
+                    {% if inv.equipped %}
+
+                        <button class="btn btn-success" disabled>
+                            Equipped
+                        </button>
+
+                    {% else %}
+
+                        <form action="/equip/{{ inv.item.id }}" method="POST">
+
+                            <button class="btn btn-primary">
+                                Equip
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+        {% else %}
+        <p>You don't own any themes yet.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -217,6 +217,43 @@ def buy_item(item_id):
 
     return redirect("/shop")
 
+@app.route("/inventory")
+def inventory():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = db.session.get(User, session["user_id"])
+
+    inventory = (
+        Inventory.query
+        .filter_by(user_id=user.id)
+        .join(ShopItem)
+        .all()
+    )
+
+    avatars = []
+    titles = []
+    themes = []
+
+    for inv in inventory:
+
+        if inv.item.category == "Avatar":
+            avatars.append(inv)
+
+        elif inv.item.category == "Title":
+            titles.append(inv)
+
+        elif inv.item.category == "Theme":
+            themes.append(inv)
+
+    return render_template(
+        "inventory.html",
+        avatars=avatars,
+        titles=titles,
+        themes=themes
+    )
+
 @app.route("/equip/<int:item_id>", methods=["POST"])
 def equip_item(item_id):
 
@@ -232,19 +269,17 @@ def equip_item(item_id):
     item = db.session.get(ShopItem, item_id)
 
     if item is None:
-        return redirect("/shop")
+        flash("❌ Item not found.", "danger")
+        return redirect("/inventory")
 
-    success, message = GameEngine.equip_item(
-        user,
-        item
-    )
+    success, message = GameEngine.equip_item(user, item)
 
     flash(
         message,
         "success" if success else "warning"
     )
 
-    return redirect("/shop")
+    return redirect("/inventory")
 
 @app.route("/add_quest", methods=["POST"])
 def add_quest():
