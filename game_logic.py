@@ -194,9 +194,6 @@ def check_achievements(user):
 
 def seed_shop():
 
-    if ShopItem.query.first():
-        return
-
     items = [
 
         ShopItem(
@@ -236,15 +233,56 @@ def seed_shop():
         ),
 
         ShopItem(
-            name="ocean Theme",
+            name="neon Theme",
             description="Unlock a glowing interface.",
             icon="🌌",
             category="Theme",
             rarity="Epic",
-            price=500
+            price=4
+        ),
+
+        ShopItem(
+            name="gold Theme",
+            description="A luxurious golden theme.",
+            icon="👑",
+            category="Theme",
+            rarity="Epic",
+            price=4
+        ),
+
+        ShopItem(
+            name="crimson Theme",
+            description="A stunning crimson theme.",
+            icon="👑",
+            category="Theme",
+            rarity="Epic",
+            price=4
+        ),
+
+        ShopItem(
+            name="night Theme",
+            description="A mysterious night theme.",
+            icon="👑",
+            category="Theme",
+            rarity="Epic",
+            price=4
+        ),
+
+        ShopItem(
+            name="emerald Theme",
+            description="An elegant emerald theme.",
+            icon="👑",
+            category="Theme",
+            rarity="Epic",
+            price=4
         ),
 
     ]
 
-    db.session.add_all(items)
+    for item in items:
+        exists = ShopItem.query.filter_by(name=item.name).first()
+
+        if not exists:
+            db.session.add(item)
+
     db.session.commit()
