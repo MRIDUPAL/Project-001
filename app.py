@@ -8,9 +8,14 @@ from game_logic import (
 )
 from game_engine import GameEngine
 from datetime import datetime, date
+import os
+
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "Jg9#rV2!xL7@Qm4$Nz8*Hp5&Wc1^Yf6!Tb3@Kd9%Ls2#Xv7"
+)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///questify.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
