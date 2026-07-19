@@ -19,7 +19,7 @@ ALL_ACHIEVEMENTS = [
     },
 
     {
-        "title": "⚔️ Adventurer",
+        "title": "⚔️ Getting Started",
         "description": "Complete 10 quests.",
         "type": "quests",
         "target": 10,
@@ -84,7 +84,7 @@ def get_rank(level):
     elif level < 20:
         return "🛡️ Hero"
     elif level < 40:
-        return "👑 Champion"
+        return "👑 Master"
     return "🐉 Legend"
 
 
@@ -202,7 +202,7 @@ def seed_shop():
             icon="🤖",
             category="Avatar",
             rarity="Common",
-            price=250
+            price=150
         ),
 
         ShopItem(
@@ -220,7 +220,7 @@ def seed_shop():
             icon="🧙",
             category="Avatar",
             rarity="Epic",
-            price=600
+            price=1000
         ),
 
         ShopItem(
@@ -229,7 +229,7 @@ def seed_shop():
             icon="👑",
             category="Title",
             rarity="Legendary",
-            price=1000
+            price=3000
         ),
 
         ShopItem(
@@ -238,43 +238,43 @@ def seed_shop():
             icon="🌌",
             category="Theme",
             rarity="Epic",
-            price=4
+            price=800
         ),
 
         ShopItem(
             name="gold Theme",
             description="A luxurious golden theme.",
-            icon="👑",
+            icon="🌌",
             category="Theme",
-            rarity="Epic",
-            price=4
+            rarity="Legendary",
+            price=4000
         ),
 
         ShopItem(
             name="crimson Theme",
             description="A stunning crimson theme.",
-            icon="👑",
+            icon="🌌",
             category="Theme",
             rarity="Epic",
-            price=4
+            price=1000
         ),
 
         ShopItem(
             name="night Theme",
             description="A mysterious night theme.",
-            icon="👑",
+            icon="🌌",
             category="Theme",
-            rarity="Epic",
-            price=4
+            rarity="Common",
+            price=200
         ),
 
         ShopItem(
             name="emerald Theme",
             description="An elegant emerald theme.",
-            icon="👑",
+            icon="🌌",
             category="Theme",
-            rarity="Epic",
-            price=4
+            rarity="Rare",
+            price=550
         ),
 
     ]
