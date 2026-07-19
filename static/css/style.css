@@ -559,3 +559,29 @@ a:hover{
     }
 
 }
+
+/* =========================
+   Hero Landing Image
+========================= */
+
+.hero-image{
+    border-radius:20px;
+    box-shadow:0 0 35px rgba(124,58,237,.45);
+    transition:all .3s ease;
+}
+
+.hero-image:hover{
+    transform:translateY(-8px) scale(1.02);
+    box-shadow:0 0 50px rgba(124,58,237,.65);
+}
+
+.hero-subtitle{
+    color: var(--text);
+    opacity: 0.9;
+    font-size: 1.3rem;
+    line-height: 1.7;
+}
+
+.text-soft{
+    color: var(--text-muted);
+}

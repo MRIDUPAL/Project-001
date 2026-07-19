@@ -6,28 +6,178 @@ Home
 
 {% block content %}
 
-<div class="text-center py-5">
+<!-- HERO SECTION -->
 
-    <h1 class="display-2 fw-bold mb-4">
-        Gamify Your Goals
-    </h1>
+<div class="container py-5">
 
-    <p class="lead mb-5">
-        Complete tasks, earn XP, level up, and become the hero of your own journey.
-    </p>
+    <div class="row align-items-center">
 
-    <button
-        class="btn btn-primary btn-lg px-5 py-3"
-        data-bs-toggle="modal"
-        data-bs-target="#startModal">
+        <div class="col-lg-6">
 
-        🚀 Start Your Adventure
+            <span class="badge bg-primary mb-3 fs-6">
+                🎮 Productivity Reimagined
+            </span>
 
-    </button>
+            <h1 class="display-2 fw-bold mb-4">
+                Level Up Your Productivity
+            </h1>
+
+            <p class="lead hero-subtitle mb-4">
+                Questify transforms everyday tasks into exciting quests.
+                Complete challenges, earn XP, collect coins, unlock
+                achievements, and build better habits through gamification.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+
+                <button
+                    class="btn btn-primary btn-lg px-5 py-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#startModal">
+
+                    🚀 Start Your Adventure
+
+                </button>
+
+                <a href="#features" class="btn btn-outline-light btn-lg px-4 py-3">
+                    🔍 Explore Features
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6 text-center mt-5 mt-lg-0">
+
+            <img src="{{ url_for('static', filename='images/dashboard.png') }}"
+                class="img-fluid hero-image"
+                alt="Questify Dashboard">
+
+        </div>
+
+                <div class="progress mb-3" style="height:18px;">
+
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         style="width:70%;">
+                        Level Progress
+                    </div>
+
+                </div>
+
+                <small class="text-soft">
+                    Complete quests and watch your progress grow.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<!-- Start Adventure Modal -->
+<!-- FEATURES -->
+
+<section id="features" class="py-5">
+
+    <h2 class="text-center mb-5">
+        Why Choose Questify?
+    </h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="card h-100 text-center p-4">
+
+                <h1>⭐</h1>
+
+                <h4>XP & Levels</h4>
+
+                <p>
+                    Gain experience for every completed quest and level up your journey.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card h-100 text-center p-4">
+
+                <h1>🪙</h1>
+
+                <h4>Reward System</h4>
+
+                <p>
+                    Earn coins and spend them on exciting cosmetic rewards.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card h-100 text-center p-4">
+
+                <h1>🏆</h1>
+
+                <h4>Achievements</h4>
+
+                <p>
+                    Unlock achievements and celebrate every milestone.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card h-100 text-center p-4">
+
+                <h1>🎨</h1>
+
+                <h4>Customization</h4>
+
+                <p>
+                    Personalize your profile with themes, avatars and titles.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CTA -->
+
+<section class="text-center py-5">
+
+    <h2 class="display-5 fw-bold mb-3">
+        Ready to Begin Your Adventure?
+    </h2>
+
+    <p class="lead mb-4">
+        Turn productivity into a game and become the hero of your own journey.
+    </p>
+
+    <button
+        class="btn btn-success btn-lg px-5 py-3"
+        data-bs-toggle="modal"
+        data-bs-target="#startModal">
+
+        🚀 Create Your Account
+
+    </button>
+
+</section>
+
+<!-- MODAL -->
 
 <div class="modal fade" id="startModal" tabindex="-1">
 
@@ -52,7 +202,7 @@ Home
             <div class="modal-body text-center">
 
                 <p class="mb-4">
-                    Ready to begin your productivity adventure?
+                    Begin your productivity adventure today!
                 </p>
 
                 <a href="/login" class="btn btn-outline-light w-100 mb-3 py-2">
